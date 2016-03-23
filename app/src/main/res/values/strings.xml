@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="validate">Submit</string>
+    <string name="welcome">Bienvenue,\n veuillez choisir votre formation</string>
 
     <string-array name="groupe">
         <item>N1P1</item>
@@ -12,4 +13,5 @@
         <item>FC</item>
         <item>TR</item>
     </string-array>
+    <string name="title_activity_result">ResultActivity</string>
 </resources>

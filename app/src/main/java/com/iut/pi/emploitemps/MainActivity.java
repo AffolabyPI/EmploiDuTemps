@@ -1,5 +1,6 @@
 package com.iut.pi.emploitemps;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,11 +11,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private Spinner spin;
     private Button button;
+    private String groupe;
+    private TextView text;
+    private ImageView img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +29,10 @@ public class MainActivity extends AppCompatActivity {
 
         spin = (Spinner) findViewById(R.id.spin);
         button = (Button) findViewById(R.id.button);
+        text = (TextView) findViewById(R.id.textMain);
+        img = (ImageView) findViewById(R.id.imageViewMain);
+
+        text.setTextColor(getResources().getColor(R.color.colorAccent));
 
         ArrayAdapter adapt = ArrayAdapter.createFromResource(this, R.array.groupe, android.R.layout.simple_spinner_item);
         adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -52,5 +62,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void doOk(View view){
+        Intent intent = new Intent(getApplicationContext(),ResultActivity.class);
+        Bundle bundle = new Bundle();
+        groupe = spin.getSelectedItem().toString().trim();
+        bundle.putString("Groupe", groupe);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
