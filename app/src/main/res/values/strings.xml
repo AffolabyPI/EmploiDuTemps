@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">EmploiTemps</string>
     <string name="action_settings">Settings</string>
+
+    <string name="validate">Submit</string>
+
+    <string-array name="groupe">
+        <item>N1P1</item>
+        <item>N2P1</item>
+        <item>N3P1</item>
+        <item>N4P1</item>
+        <item>FC</item>
+        <item>TR</item>
+    </string-array>
 </resources>

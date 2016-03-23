@@ -8,24 +8,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity {
+    private Spinner spin;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        spin = (Spinner) findViewById(R.id.spin);
+        button = (Button) findViewById(R.id.button);
+
+        ArrayAdapter adapt = ArrayAdapter.createFromResource(this, R.array.groupe, android.R.layout.simple_spinner_item);
+        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spin.setAdapter(adapt);
+
+
     }
 
     @Override
