@@ -14,4 +14,5 @@
         <item>TR</item>
     </string-array>
     <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_calendar_adapter">CalendarAdapter</string>
 </resources>
