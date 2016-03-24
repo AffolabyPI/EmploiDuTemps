@@ -2,6 +2,8 @@ package com.iut.pi.emploitemps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
 
 public class MainActivity extends Activity {
     private Spinner spinGroupe;
@@ -39,7 +50,7 @@ public class MainActivity extends Activity {
         groupeInfo = ArrayAdapter.createFromResource(this, R.array.groupeDutInfo, android.R.layout.simple_spinner_item);
         groupeInfo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        groupeGeii = ArrayAdapter.createFromResource(this,R.array.groupeDutGeii, android.R.layout.simple_spinner_item);
+        groupeGeii = ArrayAdapter.createFromResource(this, R.array.groupeDutGeii, android.R.layout.simple_spinner_item);
         groupeGeii.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         ArrayAdapter choixFormation = ArrayAdapter.createFromResource(this, R.array.formation, android.R.layout.simple_spinner_item);
@@ -50,9 +61,9 @@ public class MainActivity extends Activity {
         formation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(formation.getSelectedItem().toString().trim().equals("Info")){
+                if (formation.getSelectedItem().toString().trim().equals("Info")) {
                     spinGroupe.setAdapter(groupeInfo);
-                }else{
+                } else {
                     spinGroupe.setAdapter(groupeGeii);
                 }
             }
@@ -86,12 +97,51 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void doOk(View view){
+    public void doOk(View view) {
         Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
         Bundle bundle = new Bundle();
         groupe = spinGroupe.getSelectedItem().toString().trim();
         bundle.putString("Groupe", groupe);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public static JSONObject requestWebService(String service) {
+        JSONObject jsonObject = null;
+        disableConnectionReuseIfNecessary();
+
+        HttpURLConnection urlConnection = null;
+        try {
+            URL urlToRequest = new URL("https://httpbin.org/get");
+            urlConnection = (HttpURLConnection) urlToRequest.openConnection();
+            urlConnection.setConnectTimeout(125);
+            urlConnection.setReadTimeout(125);
+
+            //Handle issues
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                System.out.println("Pull up");
+            } else if (statusCode != HttpURLConnection.HTTP_OK) {
+                System.out.println("Pull out");
+            }
+
+            //Create JSON object from content
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            return new JSONObject(getResponseText(in));
+        } catch (Exception e) {
+        } finally {
+            if (urlConnection != null)
+                urlConnection.disconnect();
+        }
+        return null;
+    }
+
+    private static void disableConnectionReuseIfNecessary() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO)
+            System.setProperty("http.keepAlive", "false");
+    }
+
+    private static String getResponseText(InputStream inStream){
+        return new Scanner(inStream).useDelimiter("\\A").next();
     }
 }

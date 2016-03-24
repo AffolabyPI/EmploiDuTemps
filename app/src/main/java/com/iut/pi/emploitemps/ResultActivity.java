@@ -2,6 +2,7 @@ package com.iut.pi.emploitemps;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,10 @@ public class ResultActivity extends Activity {
         adapter = new GridCellAdapter(getApplicationContext(), R.id.calendar_day_gridcell, month, year);
         adapter.notifyDataSetChanged();
         mGrid.setAdapter(adapter);
+    }
+
+    public void getList(View view){
+
     }
 
 

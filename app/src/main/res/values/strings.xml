@@ -4,7 +4,11 @@
 
     <string name="validate">Submit</string>
     <string name="welcome">Bienvenue,\n veuillez choisir votre formation</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_calendar_adapter">CalendarAdapter</string>
+    <string name="title_activity_logo">LogoActivity</string>
 
+    <!-- Array related to groups Name Info -->
     <string-array name="groupeDutInfo">
         <item>N1P1</item>
         <item>N2P1</item>
@@ -14,6 +18,7 @@
         <item>TR</item>
     </string-array>
 
+    <!-- Array related to groups Name GEII -->
     <string-array name="groupeDutGeii">
         <item>Groupe 1</item>
         <item>Groupe 2</item>
@@ -21,12 +26,12 @@
         <item>Groupe 4</item>
     </string-array>
 
+    <!-- Array related to formations -->
     <string-array name="formation">
         <item>Info</item>
         <item>GEII</item>
     </string-array>
 
-    <string name="title_activity_result">ResultActivity</string>
-    <string name="title_activity_calendar_adapter">CalendarAdapter</string>
-    <string name="title_activity_logo">LogoActivity</string>
+    <!-- Array related to REST Server -->
+
 </resources>
