@@ -70,4 +70,5 @@
         android:paddingBottom="50dp">
 
     </GridView>
+
 </RelativeLayout>
