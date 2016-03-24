@@ -24,6 +24,7 @@ public class LogoActivity extends Activity {
                 @Override
                 public void run() {
                     startActivity(intent);
+                    finish();
                 }
             }, 3 * 1000);
         }catch(Exception e){

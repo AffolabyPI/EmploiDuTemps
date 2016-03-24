@@ -5,7 +5,7 @@
     <string name="validate">Submit</string>
     <string name="welcome">Bienvenue,\n veuillez choisir votre formation</string>
 
-    <string-array name="groupe">
+    <string-array name="groupeDutInfo">
         <item>N1P1</item>
         <item>N2P1</item>
         <item>N3P1</item>
@@ -13,6 +13,19 @@
         <item>FC</item>
         <item>TR</item>
     </string-array>
+
+    <string-array name="groupeDutGeii">
+        <item>Groupe 1</item>
+        <item>Groupe 2</item>
+        <item>Groupe 3</item>
+        <item>Groupe 4</item>
+    </string-array>
+
+    <string-array name="formation">
+        <item>Info</item>
+        <item>GEII</item>
+    </string-array>
+
     <string name="title_activity_result">ResultActivity</string>
     <string name="title_activity_calendar_adapter">CalendarAdapter</string>
     <string name="title_activity_logo">LogoActivity</string>

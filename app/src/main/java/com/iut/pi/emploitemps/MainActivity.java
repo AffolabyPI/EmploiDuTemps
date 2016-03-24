@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,30 +14,54 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-    private Spinner spin;
+    private Spinner spinGroupe;
+    private Spinner formation;
     private Button button;
     private String groupe;
-    private TextView text;
+    //private TextView text;
     private ImageView img;
+    private ArrayAdapter groupeInfo;
+    private ArrayAdapter groupeGeii;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        spin = (Spinner) findViewById(R.id.spin);
+        spinGroupe = (Spinner) findViewById(R.id.spin);
+        formation = (Spinner) findViewById(R.id.spinGroupe);
         button = (Button) findViewById(R.id.button);
-        text = (TextView) findViewById(R.id.textMain);
+        //text = (TextView) findViewById(R.id.textMain);
         img = (ImageView) findViewById(R.id.imageViewMain);
 
-        text.setTextColor(getResources().getColor(R.color.colorAccent));
+        //text.setTextColor(getResources().getColor(R.color.colorAccent));
 
-        ArrayAdapter adapt = ArrayAdapter.createFromResource(this, R.array.groupe, android.R.layout.simple_spinner_item);
-        adapt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        groupeInfo = ArrayAdapter.createFromResource(this, R.array.groupeDutInfo, android.R.layout.simple_spinner_item);
+        groupeInfo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        spin.setAdapter(adapt);
+        groupeGeii = ArrayAdapter.createFromResource(this,R.array.groupeDutGeii, android.R.layout.simple_spinner_item);
+        groupeGeii.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        ArrayAdapter choixFormation = ArrayAdapter.createFromResource(this, R.array.formation, android.R.layout.simple_spinner_item);
+        choixFormation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        formation.setAdapter(choixFormation);
+
+        formation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(formation.getSelectedItem().toString().trim().equals("Info")){
+                    spinGroupe.setAdapter(groupeInfo);
+                }else{
+                    spinGroupe.setAdapter(groupeGeii);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -64,7 +89,7 @@ public class MainActivity extends Activity {
     public void doOk(View view){
         Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
         Bundle bundle = new Bundle();
-        groupe = spin.getSelectedItem().toString().trim();
+        groupe = spinGroupe.getSelectedItem().toString().trim();
         bundle.putString("Groupe", groupe);
         intent.putExtras(bundle);
         startActivity(intent);

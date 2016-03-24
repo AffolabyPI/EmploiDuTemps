@@ -10,12 +10,9 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:id="@+id/spin"
-        android:layout_below="@+id/textMain"
         android:paddingLeft="140dp"
-        android:layout_marginTop="100dp"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/button"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
     </Spinner>
@@ -27,7 +24,8 @@
         android:id="@+id/textMain"
         android:textSize="20dp"
         android:layout_centerHorizontal="true"
-        android:textStyle="bold|italic" />
+        android:textStyle="bold|italic"
+        android:textColor="#f70808" />
 
     <Button
         android:layout_width="wrap_content"
@@ -35,11 +33,10 @@
         android:id="@+id/button"
         style="?android:textAppearanceMedium"
         android:background="@drawable/button"
-        android:layout_marginTop="50dp"
         android:text="@string/validate"
-        android:layout_below="@+id/spin"
-        android:layout_centerHorizontal="true"
-        android:onClick="doOk" />
+        android:onClick="doOk"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="150dp"
@@ -52,5 +49,27 @@
         android:layout_below="@+id/button"
 
         />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinGroupe"
+        android:paddingLeft="140dp"
+        android:layout_below="@+id/textMain"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Veuillez choisir votre groupe"
+        android:id="@+id/choixGroupe"
+        android:textSize="20dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold|italic"
+        android:layout_above="@+id/spin"
+        android:layout_alignLeft="@+id/textMain"
+        android:layout_alignStart="@+id/textMain"
+        android:textColor="#f70808" />
 
 </RelativeLayout>
