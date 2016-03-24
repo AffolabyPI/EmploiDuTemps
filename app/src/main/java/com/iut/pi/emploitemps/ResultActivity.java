@@ -261,8 +261,8 @@ public class ResultActivity extends Activity {
             Log.d(tag, "Current Day : " + getCurrentDayOfMonth());
             String[] day_color = list.get(position).split(" -");
             String theday = day_color[0];
-            String themonth = day_color[2];
-            String theyear = day_color[3];
+            String themonth = day_color[0];
+            String theyear = day_color[0];
             if ((!eventsPerMonthMap.isEmpty()) && (eventsPerMonthMap != null)) {
                 if (eventsPerMonthMap.containsKey(theday)) {
                     num_events_per_day = (TextView) row
@@ -278,15 +278,15 @@ public class ResultActivity extends Activity {
             Log.d(tag, "Setting GridCell " + theday + "-" + themonth + "-"
                     + theyear);
 
-            if (day_color[1].equals("GREY")) {
+            if (day_color[0].equals("GREY")) {
                 gridcell.setTextColor(getResources()
                         .getColor(R.color.lightGrey));
             }
-            if (day_color[1].equals("WHITE")) {
+            if (day_color[0].equals("WHITE")) {
                 gridcell.setTextColor(getResources().getColor(
                         R.color.white));
             }
-            if (day_color[1].equals("BLUE")) {
+            if (day_color[0].equals("BLUE")) {
                 gridcell.setTextColor(getResources().getColor(R.color.orange));
             }
             return row;
