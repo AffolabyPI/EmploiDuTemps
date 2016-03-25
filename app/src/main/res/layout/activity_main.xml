@@ -5,66 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.iut.pi.emploitemps.MainActivity">
+    tools:context="com.iut.pi.emploitemps.MainActivity"
+    android:background="@color/colorPrimary">
 
     <Spinner
         android:id="@+id/spin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/white"
+        android:textAlignment="center"
+        />
 
     <TextView
         android:id="@+id/textMain"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:textAlignment="center"
         android:text="@string/welcome"
-        android:textColor="#f70808"
-        android:textSize="20dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/button"
+        android:textSize="22dp"
         android:textStyle="bold|italic" />
 
     <Button
         android:id="@+id/button"
         style="?android:textAppearanceMedium"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:background="@drawable/button"
         android:onClick="doOk"
-        android:text="@string/validate" />
+        android:text="@string/validate"
+        android:textColor="@color/white"
+        android:layout_above="@+id/imageViewMain"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <ImageView
         android:id="@+id/imageViewMain"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
         android:src="@mipmap/ic_launcher"
         android:visibility="visible"
-
-        />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <Spinner
         android:id="@+id/spinGroupe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_below="@+id/textMain"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/white"
+        android:textAlignment="center"
+        />
 
     <TextView
         android:id="@+id/choixGroupe"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/spin"
-        android:layout_alignLeft="@+id/textMain"
-        android:layout_alignStart="@+id/textMain"
-        android:layout_centerHorizontal="true"
         android:text="Veuillez choisir votre groupe"
-        android:textColor="#f70808"
-        android:textSize="20dp"
-        android:textStyle="bold|italic" />
+        android:textColor="#ffffff"
+        android:textAlignment="center"
+        android:background="@drawable/button"
+        android:textSize="22dp"
+        android:textStyle="bold|italic"
+        android:layout_above="@+id/spin"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
