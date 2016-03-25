@@ -30,6 +30,7 @@
     <string-array name="formation">
         <item>Info</item>
         <item>GEII</item>
+        <item>Bio</item>
     </string-array>
 
     <!-- Array related to REST Server -->

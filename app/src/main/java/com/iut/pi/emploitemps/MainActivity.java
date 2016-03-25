@@ -1,10 +1,12 @@
 package com.iut.pi.emploitemps;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +18,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
@@ -58,11 +66,32 @@ public class MainActivity extends Activity {
 
         formation.setAdapter(choixFormation);
 
+        String tag = "json_obj_req";
+        String url = "http://api.androidhive.info/volley/person_object.json";
+
+        final ProgressDialog mDialog = new ProgressDialog(this);
+        mDialog.setMessage("Loading ...");
+        mDialog.show();
+
+        JsonObjectRequest json = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("Test", response.toString());
+                mDialog.hide();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Test", error.toString());
+                mDialog.hide();
+            }
+        });
         try {
-            Toast.makeText(getApplicationContext(), (String) requestWebService("https://httpbin.org/get").get("origin").toString(), Toast.LENGTH_LONG).show();
-        } catch (Exception e){
+            AppController.getInstance().addToRequestQueue(json, tag);
+        } catch (Exception e) {
             Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
         }
+
         formation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -78,6 +107,15 @@ public class MainActivity extends Activity {
 
             }
         });
+    }
+
+    public void doOk(View view) {
+        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+        Bundle bundle = new Bundle();
+        groupe = spinGroupe.getSelectedItem().toString().trim();
+        bundle.putString("Groupe", groupe);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -100,52 +138,5 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void doOk(View view) {
-        Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
-        Bundle bundle = new Bundle();
-        groupe = spinGroupe.getSelectedItem().toString().trim();
-        bundle.putString("Groupe", groupe);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    public static JSONObject requestWebService(String service) {
-        disableConnectionReuseIfNecessary();
-
-        HttpURLConnection urlConnection = null;
-        try {
-            URL urlToRequest = new URL(service);
-            urlConnection = (HttpURLConnection) urlToRequest.openConnection();
-            urlConnection.setConnectTimeout(125);
-            urlConnection.setReadTimeout(125);
-
-            //Handle issues
-            int statusCode = urlConnection.getResponseCode();
-            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                System.out.println("403");
-            } else if (statusCode != HttpURLConnection.HTTP_OK) {
-                System.out.println("404");
-            }
-
-            //Create JSON object from content
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            return new JSONObject(getResponseText(in));
-        } catch (Exception e) {
-        } finally {
-            if (urlConnection != null)
-                urlConnection.disconnect();
-        }
-        return null;
-    }
-
-    private static void disableConnectionReuseIfNecessary() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO)
-            System.setProperty("http.keepAlive", "false");
-    }
-
-    private static String getResponseText(InputStream inStream){
-        return new Scanner(inStream).useDelimiter("\\A").next();
     }
 }
