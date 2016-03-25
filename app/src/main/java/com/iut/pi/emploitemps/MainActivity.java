@@ -58,6 +58,11 @@ public class MainActivity extends Activity {
 
         formation.setAdapter(choixFormation);
 
+        try {
+            Toast.makeText(getApplicationContext(), (String) requestWebService("https://httpbin.org/get").get("origin").toString(), Toast.LENGTH_LONG).show();
+        } catch (Exception e){
+            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+        }
         formation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -107,12 +112,11 @@ public class MainActivity extends Activity {
     }
 
     public static JSONObject requestWebService(String service) {
-        JSONObject jsonObject = null;
         disableConnectionReuseIfNecessary();
 
         HttpURLConnection urlConnection = null;
         try {
-            URL urlToRequest = new URL("https://httpbin.org/get");
+            URL urlToRequest = new URL(service);
             urlConnection = (HttpURLConnection) urlToRequest.openConnection();
             urlConnection.setConnectTimeout(125);
             urlConnection.setReadTimeout(125);
@@ -120,9 +124,9 @@ public class MainActivity extends Activity {
             //Handle issues
             int statusCode = urlConnection.getResponseCode();
             if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                System.out.println("Pull up");
+                System.out.println("403");
             } else if (statusCode != HttpURLConnection.HTTP_OK) {
-                System.out.println("Pull out");
+                System.out.println("404");
             }
 
             //Create JSON object from content
