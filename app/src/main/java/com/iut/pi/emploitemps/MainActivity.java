@@ -1,36 +1,30 @@
 package com.iut.pi.emploitemps;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends Activity {
     private Spinner spinGroupe;
@@ -66,47 +60,8 @@ public class MainActivity extends Activity {
 
         formation.setAdapter(choixFormation);
 
-        String tag = "json_obj_req";
-        String url = "http://api.androidhive.info/volley/person_object.json";
-
-        final ProgressDialog mDialog = new ProgressDialog(this);
-        mDialog.setMessage("Loading ...");
-        mDialog.show();
-
-        JsonObjectRequest json = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("Test", response.toString());
-                mDialog.hide();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("Test", error.toString());
-                mDialog.hide();
-            }
-        });
-        try {
-            AppController.getInstance().addToRequestQueue(json, tag);
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-        }
-
-        formation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (formation.getSelectedItem().toString().trim().equals("Info")) {
-                    spinGroupe.setAdapter(groupeInfo);
-                } else {
-                    spinGroupe.setAdapter(groupeGeii);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        String test = new JSONParser().getJSONFromUrl("http://www.w3schools.com/website/customers_mysql.php");
+        Toast.makeText(getApplicationContext(), test, Toast.LENGTH_LONG).show();
     }
 
     public void doOk(View view) {
@@ -116,6 +71,54 @@ public class MainActivity extends Activity {
         bundle.putString("Groupe", groupe);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public class JSONParser {
+
+        InputStream is = null;
+        JSONObject jObj = null;
+        String json = "";
+
+        // constructor
+        public JSONParser() {
+        }
+
+        public String getJSONFromUrl(String url) {
+
+            // Making HTTP request
+            try {
+                // defaultHttpClient
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+                HttpPost httpPost = new HttpPost(url);
+
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+                HttpEntity httpEntity = httpResponse.getEntity();
+                is = httpEntity.getContent();
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(is, "iso-8859-1"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+
+                json = sb.toString();
+                is.close();
+            } catch (Exception e) {
+                Log.e("Buffer Error", "Error converting result " + e.toString());
+            }
+            return json;
+
+        }
     }
 
     @Override
