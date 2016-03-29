@@ -10,13 +10,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-    }
-    packagingOptions{
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -24,17 +18,41 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'test-file-shiftjis.bin'
+        exclude 'test-file-utf8.bin'
+        exclude 'test-file-utf8-cr-only.bin'
+        exclude 'test-file-iso8859-1-shortlines-win-linebr.bin'
+        exclude 'test-file-utf8-win-linebr.bin'
+        exclude 'test-file-empty.bin'
+        exclude 'test-file-utf16le.bin'
+        exclude 'test-file-utf16be.bin'
+        exclude 'test-file-iso8859-1.bin'
+        exclude 'test-file-20byteslength.bin'
+        exclude 'org/apache/commons/io/testfileNoBOM.xml'
+        exclude 'org/apache/commons/io/testfileBOM.xml'
+        exclude 'org/apache/commons/io/FileUtilsTestDataLF.dat'
+        exclude 'org/apache/commons/io/FileUtilsTestDataCR.dat'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/maven/commons-io/commons-io/pom.properties'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/maven/commons-io/commons-io/pom.xml'
+        exclude 'org/apache/commons/io/FileUtilsTestDataCRLF.dat'
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
     //testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
-    //compile fileTree(dir: 'libs', include: 'http*.jar')
-    //compile fileTree(dir: 'libs', include: 'jna*.jar')
-    //compile fileTree(dir: 'libs', include: 'commons*.jar')
-    //compile fileTree(dir: 'libs', include: 'fluent*.jar')
+    compile fileTree(dir: 'libs', include: 'http*.jar')
+    compile fileTree(dir: 'libs', include: 'jna*.jar')
+    compile fileTree(dir: 'libs', include: 'commons*.jar')
+    compile fileTree(dir: 'libs', include: 'fluent*.jar')
 
     //compile 'com.mcxiaoke.volley:library-aar:1.0.0'
 }

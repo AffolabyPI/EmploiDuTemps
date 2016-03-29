@@ -2,6 +2,7 @@ package com.iut.pi.emploitemps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,27 +15,20 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends Activity {
     private Spinner spinGroupe;
     private Spinner formation;
     private Button button;
-    private String groupe;
+    private String groupe, json;
     private ImageView img;
     private ArrayAdapter groupeInfo;
     private ArrayAdapter groupeGeii;
+    private URL url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +39,6 @@ public class MainActivity extends Activity {
         formation = (Spinner) findViewById(R.id.spinGroupe);
         button = (Button) findViewById(R.id.button);
         img = (ImageView) findViewById(R.id.imageViewMain);
-
 
 
         groupeInfo = ArrayAdapter.createFromResource(this, R.array.groupeDutInfo, android.R.layout.simple_spinner_item);
@@ -61,9 +54,9 @@ public class MainActivity extends Activity {
         formation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(formation.getSelectedItem().toString().trim().equals("Info")){
+                if (formation.getSelectedItem().toString().trim().equals("Info")) {
                     spinGroupe.setAdapter(groupeInfo);
-                }else{
+                } else {
                     spinGroupe.setAdapter(groupeGeii);
                 }
             }
@@ -74,9 +67,19 @@ public class MainActivity extends Activity {
             }
         });
 
-
-        //String test = new JSONParser().getJSONFromUrl("http://www.w3schools.com/website/customers_mysql.php");
-        //Toast.makeText(getApplicationContext(), test, Toast.LENGTH_LONG).show();
+        try {
+            url = new URL("http://agile.pierrebourgeois.fr:8080/v1/prof");
+            new JSONParser().execute(url);
+            boolean exit = false;
+            while(!exit){
+                if(json != null){
+                    Toast.makeText(getApplicationContext(), json, Toast.LENGTH_LONG).show();
+                    exit = true;
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Nose", e.toString());
+        }
     }
 
     public void doOk(View view) {
@@ -88,52 +91,32 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    public class JSONParser {
-
+    public class JSONParser extends AsyncTask<URL, Void, String> {
         InputStream is = null;
-        JSONObject jObj = null;
-        String json = "";
 
-        // constructor
-        public JSONParser() {
+        @Override
+        protected String doInBackground(URL... request) {
+           return getJSONFromUrl(request[0]);
         }
 
-        public String getJSONFromUrl(String url) {
-
+        public String getJSONFromUrl(URL request) {
             // Making HTTP request
             try {
-                // defaultHttpClient
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                HttpPost httpPost = new HttpPost(url);
+                HttpURLConnection connect = (HttpURLConnection) request.openConnection();
+                connect.setRequestMethod("GET");
 
-                HttpResponse httpResponse = httpClient.execute(httpPost);
-                HttpEntity httpEntity = httpResponse.getEntity();
-                is = httpEntity.getContent();
-
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(is, "iso-8859-1"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-
-                json = sb.toString();
-                is.close();
+                //Toast.makeText(getApplicationContext(), "" + connect.getResponseCode(), Toast.LENGTH_LONG).show();
+                is = new BufferedInputStream(connect.getInputStream());
+                String response = org.apache.commons.io.IOUtils.toString(is, "UTF-8");
+                //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                MainActivity.this.json = response;
+                return response;
             } catch (Exception e) {
-                Log.e("Buffer Error", "Error converting result " + e.toString());
+                Log.e("Error", e.toString());
             }
-            return json;
-
+            return "";
         }
+
     }
 
     @Override
