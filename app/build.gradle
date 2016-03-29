@@ -11,6 +11,13 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    packagingOptions{
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -20,14 +27,14 @@ android {
 }
 
 dependencies {
-    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     //testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
-    compile fileTree(dir: 'libs', include: 'http*.jar')
-    compile fileTree(dir: 'libs', include: 'jna*.jar')
-    compile fileTree(dir: 'libs', include: 'commons*.jar')
-    compile fileTree(dir: 'libs', include: 'fluent*.jar')
+    //compile fileTree(dir: 'libs', include: 'http*.jar')
+    //compile fileTree(dir: 'libs', include: 'jna*.jar')
+    //compile fileTree(dir: 'libs', include: 'commons*.jar')
+    //compile fileTree(dir: 'libs', include: 'fluent*.jar')
 
     //compile 'com.mcxiaoke.volley:library-aar:1.0.0'
 }

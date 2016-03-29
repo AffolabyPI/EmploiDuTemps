@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,7 +32,6 @@ public class MainActivity extends Activity {
     private Spinner formation;
     private Button button;
     private String groupe;
-    //private TextView text;
     private ImageView img;
     private ArrayAdapter groupeInfo;
     private ArrayAdapter groupeGeii;
@@ -44,10 +44,9 @@ public class MainActivity extends Activity {
         spinGroupe = (Spinner) findViewById(R.id.spin);
         formation = (Spinner) findViewById(R.id.spinGroupe);
         button = (Button) findViewById(R.id.button);
-        //text = (TextView) findViewById(R.id.textMain);
         img = (ImageView) findViewById(R.id.imageViewMain);
 
-        //text.setTextColor(getResources().getColor(R.color.colorAccent));
+
 
         groupeInfo = ArrayAdapter.createFromResource(this, R.array.groupeDutInfo, android.R.layout.simple_spinner_item);
         groupeInfo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -59,9 +58,25 @@ public class MainActivity extends Activity {
         choixFormation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         formation.setAdapter(choixFormation);
+        formation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(formation.getSelectedItem().toString().trim().equals("Info")){
+                    spinGroupe.setAdapter(groupeInfo);
+                }else{
+                    spinGroupe.setAdapter(groupeGeii);
+                }
+            }
 
-        String test = new JSONParser().getJSONFromUrl("http://www.w3schools.com/website/customers_mysql.php");
-        Toast.makeText(getApplicationContext(), test, Toast.LENGTH_LONG).show();
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        //String test = new JSONParser().getJSONFromUrl("http://www.w3schools.com/website/customers_mysql.php");
+        //Toast.makeText(getApplicationContext(), test, Toast.LENGTH_LONG).show();
     }
 
     public void doOk(View view) {
