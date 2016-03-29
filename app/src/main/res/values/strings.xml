@@ -32,6 +32,7 @@
         <item>GEII</item>
         <item>Bio</item>
     </string-array>
+    <string name="title_activity_cours">CoursActivity</string>
 
     <!-- Array related to REST Server -->
 

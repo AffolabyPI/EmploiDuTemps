@@ -87,6 +87,7 @@ public class MainActivity extends Activity {
         Bundle bundle = new Bundle();
         groupe = spinGroupe.getSelectedItem().toString().trim();
         bundle.putString("Groupe", groupe);
+        bundle.putString("JSON", json);
         intent.putExtras(bundle);
         startActivity(intent);
     }

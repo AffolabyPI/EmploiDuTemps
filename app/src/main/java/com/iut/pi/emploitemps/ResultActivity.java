@@ -43,7 +43,6 @@ public class ResultActivity extends Activity {
         mGrid = (GridView) findViewById(R.id.calendar);
 
         extras = getIntent().getExtras();
-        String result = extras.getString("Groupe");
 
         month = 03;
         year = 2016;
@@ -54,7 +53,10 @@ public class ResultActivity extends Activity {
     }
 
     public void getList(View view){
-
+        Intent intent = new Intent(getApplicationContext(), CoursActivity.class);
+        extras = getIntent().getExtras();
+        intent.putExtras(extras);
+        startActivity(intent);
     }
 
 

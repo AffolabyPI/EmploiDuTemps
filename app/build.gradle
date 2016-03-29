@@ -53,6 +53,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: 'jna*.jar')
     compile fileTree(dir: 'libs', include: 'commons*.jar')
     compile fileTree(dir: 'libs', include: 'fluent*.jar')
+    compile 'com.google.code.gson:gson:2.3.1'
 
     //compile 'com.mcxiaoke.volley:library-aar:1.0.0'
 }
