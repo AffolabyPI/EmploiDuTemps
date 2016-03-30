@@ -14,10 +14,14 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -30,14 +34,24 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ResultActivity extends Activity {
+    private static final String ALIAS = "alias";
+    private static final String CODE_GROUPE = "codeGroupe";
+    private static final String CODE_SEANCE = "codeSeance";
+    private static final String DATE_SEANCE = "dateSeance";
+    private static final String DUREE_SEANCE = "dureeSeance";
+    private static final String HEURE_SEANCE = "heureSeance";
+    private static final String MODULE_NOM = "moduleNom";
+    private static final String NOM_GROUPE = "nomGroupe";
+    private static final String NOM_PROF = "nomProf";
     private Bundle extras;
     private ImageView mPreviousMonth, mNextMonth;
     private Button mButton;
     private GridView mGrid;
     private GridCellAdapter adapter;
     private int month, year;
-    private String json;
+    private String json, jsonStr;
     private URL url;
+    HashMap<String, String> contact = new HashMap<String, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +64,16 @@ public class ResultActivity extends Activity {
         mGrid = (GridView) findViewById(R.id.calendar);
 
         extras = getIntent().getExtras();
-        Toast.makeText(getApplicationContext(), extras.getString("Code"), Toast.LENGTH_LONG).show();
 
-        month = 03;
-        year = 2016;
+        Calendar calendar = Calendar.getInstance();
+        month = calendar.get(Calendar.MONTH) + 1;
+        year = calendar.get(Calendar.YEAR);
 
         adapter = new GridCellAdapter(getApplicationContext(), R.id.calendar_day_gridcell, month, year);
         adapter.notifyDataSetChanged();
         mGrid.setAdapter(adapter);
+
+        json = extras.getString("JSON");
 
         try {
             url = new URL("http://agile.pierrebourgeois.fr:8080/v1/cours/" + extras.getString("Code"));
@@ -75,20 +91,52 @@ public class ResultActivity extends Activity {
 
     }
 
-    public void getList(View view){
+    public void getList(View view) {
         Intent intent = new Intent(getApplicationContext(), CoursActivity.class);
         extras = getIntent().getExtras();
         intent.putExtras(extras);
         intent.putExtra("JSON2", json);
+        intent.putExtra("JSON3", jsonStr);
+        intent.putExtra("Map", contact);
         startActivity(intent);
     }
 
-    public class JSONParser extends AsyncTask<URL, Void, String> {
-        InputStream is = null;
+    public class JSONParser extends AsyncTask<URL, Void, Void> {
+        InputStream is;
 
         @Override
-        protected String doInBackground(URL... request) {
-            return getJSONFromUrl(request[0]);
+        protected Void doInBackground(URL... request) {
+            try {
+                Gson gson = new GsonBuilder().create();
+                Type type = new TypeToken<ArrayList<Cours>>() {
+                }.getType();
+                getJSONFromUrl(request[0]);
+                List<Cours> cours = gson.fromJson(jsonStr, type);
+
+                for (Cours c : cours) {
+                    // adding each child node to HashMap key => value
+                    contact.put(ALIAS, c.getAlias());
+                    contact.put(CODE_GROUPE, c.getCodeGroupe());
+                    contact.put(CODE_SEANCE, c.getCodeSeance());
+                    contact.put(DATE_SEANCE, c.getDateSeance());
+                    contact.put(DUREE_SEANCE, c.getDureeSeance());
+                    if (c.getHeureSeance().length() > 3) {
+                        String lel = "";
+                        lel = c.getHeureSeance().substring(0, 2) + "h" + c.getHeureSeance().substring(2, c.getHeureSeance().length());
+                        contact.put(HEURE_SEANCE, lel);
+                    } else {
+                        String lel = "";
+                        lel = c.getHeureSeance().substring(0, 1) + "h" + c.getHeureSeance().substring(1, c.getHeureSeance().length());
+                        contact.put(HEURE_SEANCE, lel);
+                    }
+                    contact.put(MODULE_NOM, c.getModuleNom());
+                    contact.put(NOM_GROUPE, c.getNomGroupe());
+                    contact.put(NOM_PROF, c.getNomProf());
+                }
+            } catch (Exception e) {
+                Log.e("Exception", e.toString());
+            }
+            return null;
         }
 
         public String getJSONFromUrl(URL request) {
@@ -196,7 +244,6 @@ public class ResultActivity extends Activity {
 
             int currentMonth = mm - 1;
             String currentMonthName = getMonthAsString(currentMonth);
-            Toast.makeText(getApplicationContext(), getMonthAsString(currentMonth), Toast.LENGTH_LONG).show();
             daysInMonth = getNumberOfDaysOfMonth(currentMonth);
 
             Log.d(tag, "Current Month:" + currentMonthName + "having"
@@ -351,8 +398,8 @@ public class ResultActivity extends Activity {
         @Override
         public void onClick(View view) {
             String date_month_year = (String) view.getTag();
-            mButton.setText("Selected : " + date_month_year);
             Log.e("Selected date", date_month_year);
+            mButton.setText(date_month_year);
             try {
                 Date parsedDate = dateFormatter.parse(date_month_year);
                 Log.d(tag, "Parsed Date : " + parsedDate.toString());

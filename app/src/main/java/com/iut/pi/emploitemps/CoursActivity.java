@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,6 +42,7 @@ public class CoursActivity extends AppCompatActivity {
 
         Intent bundle = getIntent();
         jsonStr = bundle.getStringExtra("JSON2");
+        Toast.makeText(getApplicationContext(), jsonStr, Toast.LENGTH_LONG).show();
         new GetContacts().execute();
 
     }
@@ -68,9 +70,21 @@ public class CoursActivity extends AppCompatActivity {
                     // adding each child node to HashMap key => value
                     contact.put(ALIAS, c.getAlias());
                     contact.put(CODE_GROUPE, c.getCodeGroupe());
-                    contact.put(CODE_SEANCE, c.getCodeRessource());
-                    contact.put(DATE_SEANCE, c.getCodeSeance());
-                    contact.put(DUREE_SEANCE, c.getDateSeance());
+                    contact.put(CODE_SEANCE, c.getCodeSeance());
+                    contact.put(DATE_SEANCE, c.getDateSeance());
+                    contact.put(DUREE_SEANCE, c.getDureeSeance());
+                    if (c.getHeureSeance().length() > 3) {
+                        String lel = "";
+                        lel = c.getHeureSeance().substring(0, 2) + "h" + c.getHeureSeance().substring(2, c.getHeureSeance().length());
+                        contact.put(HEURE_SEANCE, lel);
+                    } else {
+                        String lel = "";
+                        lel = c.getHeureSeance().substring(0, 1) + "h" + c.getHeureSeance().substring(1, c.getHeureSeance().length());
+                        contact.put(HEURE_SEANCE, lel);
+                    }
+                    contact.put(MODULE_NOM, c.getModuleNom());
+                    contact.put(NOM_GROUPE, c.getNomGroupe());
+                    contact.put(NOM_PROF, c.getNomProf());
 
                     // adding contact to contact list
                     contactList.add(contact);
@@ -90,8 +104,8 @@ public class CoursActivity extends AppCompatActivity {
              * */
             ListAdapter adapter = new SimpleAdapter(
                     CoursActivity.this, contactList,
-                    R.layout.list_item, new String[]{CODE_GROUPE, DATE_SEANCE,
-                    DUREE_SEANCE}, new int[]{R.id.id,
+                    R.layout.list_item, new String[]{ALIAS, NOM_PROF,
+                    HEURE_SEANCE}, new int[]{R.id.id,
                     R.id.name, R.id.name2});
 
             listView.setAdapter(adapter);

@@ -33,8 +33,7 @@ public class MainActivity extends Activity {
     private Button button;
     private String groupe, json;
     private ImageView img;
-    private ArrayAdapter groupeInfo;
-    private ArrayAdapter groupeGeii;
+    private ArrayAdapter groupeInfo, groupeGeii, groupeBio;
     private String[] tab;
     private URL url;
     private static final String ALIAS = "alias";
@@ -87,11 +86,16 @@ public class MainActivity extends Activity {
                     groupeInfo = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
                     groupeInfo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     formation.setAdapter(groupeInfo);
-                } else {
+                } else if(spinGroupe.getSelectedItem().toString().trim().equals("GEII")){
                     populateTab();
                     groupeGeii = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
                     groupeGeii.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     formation.setAdapter(groupeGeii);
+                } else {
+                    populateTab();
+                    groupeBio = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, tab);
+                    groupeBio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    formation.setAdapter(groupeBio);
                 }
             }
 
@@ -113,21 +117,21 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    public String getCode(String nom){
+    public String getCode(String nom) {
         Gson gson = new GsonBuilder().create();
         Type type = new TypeToken<ArrayList<Groupe>>() {
         }.getType();
         List<Groupe> groupes = gson.fromJson(json, type);
 
-        for (Groupe groupe : groupes){
-            if(groupe.getIdentifiant().equals(nom) || groupe.getNom().equals(nom)){
+        for (Groupe groupe : groupes) {
+            if (groupe.getIdentifiant().equals(nom) || groupe.getNom().equals(nom)) {
                 return groupe.getCodeGroupe();
             }
         }
         return null;
     }
 
-    public void populateTab(){
+    public void populateTab() {
         // Filter result
 
         Gson gson = new GsonBuilder().create();
@@ -150,7 +154,15 @@ public class MainActivity extends Activity {
                 // adding contact to contact list
                 contactList.add(contact);
                 list.add(groupe.getIdentifiant());
-            } else if((groupe.getIdentifiant().startsWith("N") || groupe.getNom().contains("I-N")) && spinGroupe.getSelectedItem().equals("Info")){
+            } else if ((groupe.getIdentifiant().startsWith("N") || groupe.getNom().contains("I-N")) && spinGroupe.getSelectedItem().equals("Info")) {
+                contact.put(CODE_GROUPE, groupe.getCodeGroupe());
+                contact.put(COULEUR_FOND, groupe.getCouleur());
+                contact.put(NOM, groupe.getNom());
+                contact.put(IDENTIFIANT, groupe.getIdentifiant());
+                // adding contact to contact list
+                contactList.add(contact);
+                list.add(groupe.getIdentifiant());
+            } else if (groupe.getNom().startsWith("GEI") && spinGroupe.getSelectedItem().equals("GEII")){
                 contact.put(CODE_GROUPE, groupe.getCodeGroupe());
                 contact.put(COULEUR_FOND, groupe.getCouleur());
                 contact.put(NOM, groupe.getNom());
@@ -161,7 +173,7 @@ public class MainActivity extends Activity {
             }
         }
         tab = new String[list.size()];
-        for (int i = 0; i < list.size(); i++){
+        for (int i = 0; i < list.size(); i++) {
             tab[i] = list.get(i).toString();
         }
     }
