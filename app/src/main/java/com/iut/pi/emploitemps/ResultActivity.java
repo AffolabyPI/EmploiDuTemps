@@ -3,6 +3,7 @@ package com.iut.pi.emploitemps;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +36,8 @@ public class ResultActivity extends Activity {
     private GridView mGrid;
     private GridCellAdapter adapter;
     private int month, year;
+    private String json;
+    private URL url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,7 @@ public class ResultActivity extends Activity {
         mGrid = (GridView) findViewById(R.id.calendar);
 
         extras = getIntent().getExtras();
+        Toast.makeText(getApplicationContext(), extras.getString("Code"), Toast.LENGTH_LONG).show();
 
         month = 03;
         year = 2016;
@@ -50,15 +58,56 @@ public class ResultActivity extends Activity {
         adapter = new GridCellAdapter(getApplicationContext(), R.id.calendar_day_gridcell, month, year);
         adapter.notifyDataSetChanged();
         mGrid.setAdapter(adapter);
+
+        try {
+            url = new URL("http://agile.pierrebourgeois.fr:8080/v1/cours/" + extras.getString("Code"));
+            new JSONParser().execute(url);
+            boolean exit = false;
+            while (!exit) {
+                if (json != null) {
+                    exit = true;
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e("Exception", e.toString());
+        }
+
     }
 
     public void getList(View view){
         Intent intent = new Intent(getApplicationContext(), CoursActivity.class);
         extras = getIntent().getExtras();
         intent.putExtras(extras);
+        intent.putExtra("JSON2", json);
         startActivity(intent);
     }
 
+    public class JSONParser extends AsyncTask<URL, Void, String> {
+        InputStream is = null;
+
+        @Override
+        protected String doInBackground(URL... request) {
+            return getJSONFromUrl(request[0]);
+        }
+
+        public String getJSONFromUrl(URL request) {
+            // Making HTTP request
+            try {
+                HttpURLConnection connect = (HttpURLConnection) request.openConnection();
+                connect.setRequestMethod("GET");
+
+                is = new BufferedInputStream(connect.getInputStream());
+                String response = org.apache.commons.io.IOUtils.toString(is, "UTF-8");
+                ResultActivity.this.json = response;
+                return response;
+            } catch (Exception e) {
+                Log.e("Error", e.toString());
+            }
+            return "";
+        }
+
+    }
 
     // Inner Class
     public class GridCellAdapter extends BaseAdapter implements View.OnClickListener {
